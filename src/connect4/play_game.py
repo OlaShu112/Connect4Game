@@ -34,6 +34,8 @@ def play_game(mode, player_name=None, screen=None):
         player1_name = player_name or "Player 1"
 
     running = True
+    last_mouse_pressed = False
+
     while running:
         if board_is_full(board):
             draw_board(board, turn, screen)
@@ -53,16 +55,22 @@ def play_game(mode, player_name=None, screen=None):
             agent = agent1 if turn == 1 else agent2
             move = agent.get_move(board)
             drop_piece(board, move, turn)
+
         elif turn == 1:
-            if pygame.mouse.get_pressed()[0]:
+            mouse_pressed = pygame.mouse.get_pressed()[0]
+            if mouse_pressed and not last_mouse_pressed:
                 col = pygame.mouse.get_pos()[0] // SQUARE_SIZE
                 if valid_move(board, col):
                     drop_piece(board, col, turn)
                 else:
+                    last_mouse_pressed = mouse_pressed
                     continue
             else:
+                last_mouse_pressed = mouse_pressed
                 draw_board(board, turn, screen)
                 continue
+            last_mouse_pressed = mouse_pressed
+
         else:
             pygame.time.delay(800)
             move = ai_agent.get_move(board)

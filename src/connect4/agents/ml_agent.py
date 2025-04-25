@@ -7,7 +7,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import joblib
 import random
-from agents.minimax_agent import MinimaxAgent  # Import this at the top if not already
+from agents.minimax_agent import MinimaxAgent  
+from utils.game_state import GameState
 
 class MLAgent:
     def __init__(self, player_id: int, model_path: str = "models/ml_agent_model.pkl", data_path: str = "data/connect-4.data.csv", names_path: str = "data/connect-4.names.txt") -> None:
@@ -78,20 +79,25 @@ class MLAgent:
         flat = board.flatten()
         return (flat.astype(float) / 2.0).tolist()
 
-    def get_move(self, board: np.ndarray) -> int:
+    def get_move(self, board_or_game) -> int:
+        if hasattr(board_or_game, 'get_board_copy'):
+            board = board_or_game.get_board_copy()
+        else:
+            board = board_or_game
+
         valid_moves = [c for c in range(board.shape[1]) if board[0][c] == 0]
 
         if self.model is None:
             print("[MLAgent] No model loaded. Falling back to MinimaxAgent.")
             fallback = MinimaxAgent(player_id=self.player_id)
-            return fallback.get_move(board)
+            return fallback.get_move(GameState(board.copy(), self.player_id))
 
         best_move = None
         best_score = -np.inf
 
         for col in valid_moves:
             temp_board = board.copy()
-            for row in reversed(range(board.shape[0])):
+            for row in reversed(range(temp_board.shape[0])):
                 if temp_board[row][col] == 0:
                     temp_board[row][col] = self.player_id
                     break

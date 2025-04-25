@@ -32,13 +32,7 @@ class MinimaxAgent:
         Selects the best move using the Minimax algorithm with alpha-beta pruning.
 
         Args:
-            game: The current game state. Expected to implement:
-                - get_valid_moves() -> List[int]
-                - make_move(column: int, player_id: int) -> None
-                - undo_move(column: int) -> None
-                - is_terminal_node() -> bool
-                - evaluate(player_id: int) -> int
-                - columns (int): Number of columns in the game board
+            game: The current GameState instance.
 
         Returns:
             int: Best column index to play.
@@ -71,7 +65,7 @@ class MinimaxAgent:
         Recursive implementation of the Minimax algorithm with alpha-beta pruning.
 
         Args:
-            game: The current game state.
+            game: The current GameState instance.
             depth (int): Remaining depth to evaluate.
             maximizing_player (bool): Whether the current layer is maximizing.
             alpha (float): Alpha value for pruning.

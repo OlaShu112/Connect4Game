@@ -46,3 +46,12 @@ def check_win(board, player):
 
 def board_is_full(board):
     return not any(board[0][c] == 0 for c in range(COLUMN_COUNT))
+
+def block_player_move(board, player):
+    for col in range(len(board[0])):
+        if valid_move(board, col):
+            temp_board = [row.copy() for row in board]
+            row = drop_piece(temp_board, col, player)
+            if check_win(temp_board, player):
+                return col
+    return -1

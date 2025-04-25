@@ -20,3 +20,5 @@ BLUE = (70, 130, 200)
 pygame.font.init()
 FONT = pygame.font.SysFont("arial", 32)
 BIG_FONT = pygame.font.SysFont("arial", 48)
+
+TURN_TIME_LIMIT = 10  # seconds
