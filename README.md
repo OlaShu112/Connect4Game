@@ -5,6 +5,7 @@ A Python-based Connect Four game featuring a graphical user interface (GUI) and 
 ## Features
 
 - **GUI-Based Gameplay** using Pygame.
+- **Object-Oriented Programming (OOP)** architecture used throughout the project for     clean, maintainable, and scalable code.
 - **Game Modes**:
   - Human vs Human: Play against a friend locally.
   - Human vs Random Agent
@@ -21,6 +22,7 @@ A Python-based Connect Four game featuring a graphical user interface (GUI) and 
 - **Background Music** via `music_player.py`.
 - **Register Player Prompt**: Optionally enter your name at the start.
 - **Modular Codebase** for easy extensions and improvements.
+- **Evalution and ML Retraining** evalution.py.
 
 ## Installation & Setup
 
@@ -31,23 +33,24 @@ A Python-based Connect Four game featuring a graphical user interface (GUI) and 
 
 ### Install Dependencies
 
-```bash
+```
 pip install -r requirements.txt
 
 Running the Game
 
-cd src/connect4
-python main.py
+cd Connect4Assessment
+python -B src/connect4/main.py
 
 
 ### Project Structure
 
-Connect4Game/
-├── assets/                  # Audio, images, etc.
-├── connect4_dataset/        # ML dataset and model files
-├── reports/                 # Reports and documentation
+Connect4Assessment/
+├── assets/                  # Audio files, background music, etc.
+├── connect4_dataset/         # ML dataset (.csv) and attribute files (.txt)
+├── models/                   # Trained ML model (ml_agent_model.pkl)
+├── reports/                  # Reports and documentation
 ├── src/
-│   └── connect4/
+│   └── connect4Game/
 │       ├── agents/
 │       │   ├── random_agent.py
 │       │   ├── smart_agent.py
@@ -55,17 +58,23 @@ Connect4Game/
 │       │   ├── ml_agent.py
 │       ├── utils/
 │       │   ├── board_utils.py
+│       │   ├── dataset_loader.py
+│       │   ├── evaluation.py
 │       │   ├── game_state.py
 │       │   ├── game_help.py
 │       │   ├── music_player.py
 │       │   ├── player_data.py
 │       ├── graphics.py
 │       ├── constants.py
+│       ├── game.py
+│       ├── play_game.py
 │       ├── main.py
-│       ├── README.md
 ├── .gitignore
 ├── requirements.txt
 ├── scores.csv
+├── README.md
+
+
 
 
 ### Customization
@@ -110,4 +119,12 @@ pandas
 numpy
 scikit-learn
 joblib
+
+### Important Tips
+To retrain the ML Agent, delete the old model and start the game:
+
+```
+rm models/ml_agent_model.pkl
+python -B src/connect4Game/main.py
+```
 

@@ -1,86 +1,71 @@
 import os
 import csv
-import json
-import numpy as np
 
 class DatasetLoader:
     def __init__(self, data_path):
-        """
-        Initializes the DatasetLoader with the provided data path.
-        :param data_path: The path to the dataset folder or file.
-        """
         self.data_path = data_path
 
     def load_csv(self, file_name):
-        """
-        Loads a CSV file and returns it as a list of dictionaries.
-        :param file_name: The name of the CSV file to load.
-        :return: List of dictionaries containing the data.
-        """
         data = []
         try:
             file_path = os.path.join(self.data_path, file_name)
             with open(file_path, mode='r') as file:
-                reader = csv.DictReader(file)
+                reader = csv.reader(file)
                 for row in reader:
                     data.append(row)
-            print(f"Successfully loaded {file_name} as CSV.")
+            print(f"✅ Successfully loaded {file_name} as CSV.")
         except FileNotFoundError:
-            print(f"Error: The file {file_name} was not found.")
+            print(f"❌ Error: The file {file_name} was not found.")
         except Exception as e:
-            print(f"Error loading {file_name}: {e}")
+            print(f"❌ Error loading {file_name}: {e}")
         return data
 
-    def load_json(self, file_name):
-        """
-        Loads a JSON file and returns the parsed data.
-        :param file_name: The name of the JSON file to load.
-        :return: Parsed JSON data.
-        """
+    def load_attribute_names(self, file_name):
+        attributes = []
         try:
             file_path = os.path.join(self.data_path, file_name)
             with open(file_path, 'r') as file:
-                data = json.load(file)
-            print(f"Successfully loaded {file_name} as JSON.")
-        except FileNotFoundError:
-            print(f"Error: The file {file_name} was not found.")
-        except json.JSONDecodeError:
-            print(f"Error: The file {file_name} could not be decoded as JSON.")
-        except Exception as e:
-            print(f"Error loading {file_name}: {e}")
-        return data
+                lines = file.readlines()
 
-    def load_numpy(self, file_name):
-        """
-        Loads a NumPy dataset (usually a `.npy` file).
-        :param file_name: The name of the numpy file to load.
-        :return: NumPy array.
-        """
-        try:
-            file_path = os.path.join(self.data_path, file_name)
-            data = np.load(file_path)
-            print(f"Successfully loaded {file_name} as a NumPy array.")
-        except FileNotFoundError:
-            print(f"Error: The file {file_name} was not found.")
-        except ValueError:
-            print(f"Error: The file {file_name} could not be loaded as a NumPy array.")
-        except Exception as e:
-            print(f"Error loading {file_name}: {e}")
-        return data
+                start_reading = False
+                for line in lines:
+                    line = line.strip()
 
-# Example usage:
+                    # Start when "1. a1" line is found
+                    if line.startswith("1. a1:"):
+                        start_reading = True
+
+                    if start_reading:
+                        if line and '.' in line and ':' in line:
+                            parts = line.split('. ')
+                            if len(parts) > 1:
+                                attribute_name = parts[1].split(':')[0]
+                                attributes.append(attribute_name)
+                        # Stop if we reach a line like "8. Missing Attribute Values"
+                        if line.startswith("43. Class:"):
+                            break
+
+            print(f"✅ Successfully loaded attributes from {file_name}.")
+        except FileNotFoundError:
+            print(f"❌ Error: The file {file_name} was not found.")
+        except Exception as e:
+            print(f"❌ Error loading {file_name}: {e}")
+        return attributes
+
+    def load_names(self, file_name):
+        """Simple alias to load_attribute_names for consistency."""
+        return self.load_attribute_names(file_name)
+
+# Example usage
 if __name__ == "__main__":
-    # Set your data directory path
-    data_loader = DatasetLoader(data_path="path_to_your_dataset")
+    data_loader = DatasetLoader(data_path="connect4_dataset")
 
-    # Example of loading CSV
-    csv_data = data_loader.load_csv('game_data.csv')
-    print(csv_data)
+    csv_data = data_loader.load_csv('connect-4.data.csv')
+    print("First 5 rows of CSV:", csv_data[:5])
 
-    # Example of loading JSON
-    json_data = data_loader.load_json('config.json')
-    print(json_data)
+    attribute_names = data_loader.load_attribute_names('connect-4.names.txt')
+    print("Attributes (from load_attribute_names):", attribute_names)
 
-    # Example of loading NumPy data
-    numpy_data = data_loader.load_numpy('game_state.npy')
-    print(numpy_data)
+    # Using the new load_names method
+    attributes_via_load_names = data_loader.load_names('connect-4.names.txt')
+    print("Attributes (from load_names):", attributes_via_load_names)

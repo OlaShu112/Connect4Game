@@ -11,16 +11,11 @@ class Connect4Game:
         self.game_over = False
 
     def reset(self):
-        """Resets the game board and status."""
         self.board = np.zeros((self.ROWS, self.COLS), dtype=int)
         self.current_player = 1
         self.game_over = False
 
     def make_move(self, col):
-        """
-        Makes a move in the given column for the current player.
-        Returns True if move is successful, otherwise False.
-        """
         if not self.is_valid_move(col):
             return False
 
@@ -32,22 +27,18 @@ class Connect4Game:
         return True
 
     def is_valid_move(self, col):
-        """Checks if the column can accept another piece."""
         return self.board[0][col] == self.EMPTY
 
     def get_next_open_row(self, col):
-        """Finds the next open row in a column."""
         for row in range(self.ROWS-1, -1, -1):
             if self.board[row][col] == self.EMPTY:
                 return row
         return -1
 
     def get_valid_moves(self):
-        """Returns a list of valid column indices."""
         return [col for col in range(self.COLS) if self.is_valid_move(col)]
 
     def check_winner(self, row, col):
-        """Checks whether the current move resulted in a win."""
         piece = self.board[row][col]
 
         def count_direction(dx, dy):
@@ -67,13 +58,10 @@ class Connect4Game:
         return False
 
     def is_draw(self):
-        """Checks if the game is a draw."""
         return not self.game_over and all(self.board[0][col] != self.EMPTY for col in range(self.COLS))
 
     def get_board_copy(self):
-        """Returns a deep copy of the board (useful for AI simulations)."""
         return np.copy(self.board)
 
     def get_current_player(self):
-        """Returns the current player's number (1 or 2)."""
         return self.current_player

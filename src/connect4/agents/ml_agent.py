@@ -7,49 +7,62 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import joblib
 import random
-from agents.minimax_agent import MinimaxAgent  
+from agents.minimax_agent import MinimaxAgent
 from utils.game_state import GameState
+from utils.dataset_loader import DatasetLoader  # <-- Import properly
 
 class MLAgent:
-    def __init__(self, player_id: int, model_path: str = "models/ml_agent_model.pkl", data_path: str = "data/connect-4.data.csv", names_path: str = "data/connect-4.names.txt") -> None:
+    def __init__(self, player_id: int, model_path: str = "models/ml_agent_model.pkl",
+                 data_path: str = "connect4_dataset/connect-4.data.csv",
+                 names_path: str = "connect4_dataset/connect-4.names.txt") -> None:
         self.player_id = player_id
         self.model_path = model_path
         self.data_path = data_path
         self.names_path = names_path
         self.label_encoder = LabelEncoder()
+        self.feature_names = None
         self.model = self._load_or_train_model()
 
     def _load_or_train_model(self):
         if os.path.exists(self.model_path):
-            print("Loading trained model from:", self.model_path)
-            return joblib.load(self.model_path)
-        elif os.path.exists(self.data_path):
-            print("Training new model and saving to:", self.model_path)
-            return self._train_model()
+            print("✅ Loading trained model from:", self.model_path)
+            loaded_data = joblib.load(self.model_path)
+            self.label_encoder = loaded_data["label_encoder"]
+            self.feature_names = loaded_data["feature_names"]
+            return loaded_data["model"]
         else:
-            print("[MLAgent] WARNING: No training data found. Falling back to random moves.")
-            return None
+            print("✅ Training new model...")
+            return self._train_model()
 
     def _train_model(self) -> RandomForestClassifier:
         print("Training MLAgent model...")
-        if os.path.exists(self.names_path):
-            with open(self.names_path, "r") as f:
-                lines = f.readlines()
-                attribute_lines = [line.strip() for line in lines if line.strip().startswith(tuple(str(i) for i in range(1, 44)))]
-                column_names = [line.split(":")[0].split(". ")[-1] for line in attribute_lines]
-        else:
-            column_names = [f"{chr(97 + i // 6)}{(i % 6) + 1}" for i in range(42)] + ["outcome"]
 
-        df = pd.read_csv(self.data_path, names=column_names)
+        loader = DatasetLoader(os.path.dirname(self.data_path))
 
-        # Encode board symbols
-        df.iloc[:, :-1] = df.iloc[:, :-1].applymap(lambda x: {'x': 1, 'o': 2, 'b': 0}.get(x, 0))
+        csv_data = loader.load_csv('connect-4.data.csv')
+        if not csv_data:
+            print("[MLAgent] ERROR: Could not load CSV data.")
+            return None
 
-        # Encode outcome
-        df["outcome"] = self.label_encoder.fit_transform(df["outcome"])
+        attributes = loader.load_attribute_names('connect-4.names.txt')
+        if not attributes:
+            print("[MLAgent] ERROR: Could not load attributes.")
+            return None
 
-        X = df.drop("outcome", axis=1).astype(float) / 2.0
-        y = df["outcome"]
+        self.feature_names = attributes
+
+        df = pd.DataFrame(csv_data, columns=attributes)
+
+        mapping = {'x': 1, 'o': 2, 'b': 0}
+
+        for col in df.columns[:-1]:  
+            df[col] = df[col].map(mapping).fillna(0).astype(int)
+
+
+        df["Class"] = self.label_encoder.fit_transform(df["Class"])
+
+        X = df.drop("Class", axis=1).astype(float) / 2.0
+        y = df["Class"]
 
         try:
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=42)
@@ -66,9 +79,18 @@ class MLAgent:
             n_jobs=-1
         )
         model.fit(X_train, y_train)
+
+        # ✅ Training accuracy
+        train_accuracy = model.score(X_train, y_train)
+        print(f"✅ Training Accuracy: {train_accuracy * 100:.2f}%")
+
         os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
-        joblib.dump(model, self.model_path)
-        print("Model trained and saved successfully.")
+        joblib.dump({
+            "model": model,
+            "label_encoder": self.label_encoder,
+            "feature_names": self.feature_names
+        }, self.model_path)
+        print("✅ Model trained and saved successfully.")
         return model
 
     def _outcome_score(self, outcome_label: str) -> float:
@@ -103,8 +125,11 @@ class MLAgent:
                     break
 
             encoded_board = self._encode_board(temp_board)
-            proba = self.model.predict_proba([encoded_board])[0]
-            predicted_label = self.model.predict([encoded_board])[0]
+            input_df = pd.DataFrame([encoded_board], columns=self.feature_names[:-1])
+
+
+            proba = self.model.predict_proba(input_df)[0]
+            predicted_label = self.model.predict(input_df)[0]
             predicted_outcome = self.label_encoder.inverse_transform([predicted_label])[0]
             confidence = max(proba)
             score = self._outcome_score(predicted_outcome) * confidence

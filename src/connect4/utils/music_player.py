@@ -42,12 +42,12 @@ def previous_track():
     play_music()
 
 if __name__ == "__main__":
-    print("Testing music paths:")
+    #print("Testing music paths:")
     for track in music_files:
         print(track)
 
     while True:
-        print("\nCommands: [P]lay, [S]top, [N]ext, [B]ack, [Q]uit")
+        #print("\nCommands: [P]lay, [S]top, [N]ext, [B]ack, [Q]uit")
         command = input("Enter command: ").strip().lower()
 
         if command == "p":

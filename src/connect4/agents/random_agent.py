@@ -1,32 +1,26 @@
 import random
 from typing import List
+import numpy as np  # <- optional if type hinting
 
 class RandomAgent:
     def __init__(self, player_id: int = 2, name: str = "RandomAgent") -> None:
         """
         Initializes the RandomAgent with a player ID and an optional name.
-
-        Args:
-            player_id (int): The ID of the player using this agent.
-            name (str): The name of the agent. Defaults to "RandomAgent".
         """
         self.player_id = player_id
         self.name = name
 
-    def get_move(self, game) -> int:
+    def get_move(self, board: np.ndarray) -> int:
         """
-        Selects a random valid column from the game state.
+        Selects a random valid column from the board (numpy array).
 
         Args:
-            game: The game environment which must implement a `get_valid_moves()` method.
+            board (np.ndarray): The current board state.
 
         Returns:
-            int: The index of the selected column.
-
-        Raises:
-            ValueError: If there are no valid moves available.
+           int: The selected column index.
         """
-        valid_moves: List[int] = game.get_valid_moves()
+        valid_moves: List[int] = [c for c in range(board.shape[1]) if board[0][c] == 0]
         if not valid_moves:
             raise ValueError(f"[{self.name}] No valid moves available.")
 

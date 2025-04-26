@@ -1,73 +1,70 @@
+import random
 from typing import List
-
+import numpy as np  # <- optional if you want better type hints
 
 class SmartAgent:
-    """
-    SmartAgent for Connect 4.
-    
-    This agent uses simple yet effective heuristics to make decisions:
-        1. Select a winning move if available.
-        2. Block the opponent's winning move.
-        3. Prioritize the center column.
-        4. Fall back to the first valid move.
-
-    Attributes:
-        player_id (int): The ID representing this agent (usually 1 or 2).
-        name (str): The display name of the agent.
-    """
-
-    def __init__(self, player_id: int, name: str = "SmartAgent") -> None:
+    def __init__(self, player_id: int = 2, name: str = "SmartAgent") -> None:
         """
-        Initializes the SmartAgent instance.
-
-        Args:
-            player_id (int): The ID assigned to this agent (1 or 2).
-            name (str): The agent's name (default: 'SmartAgent').
+        Initializes the SmartAgent with a player ID and an optional name.
         """
         self.player_id = player_id
         self.name = name
 
-    def get_move(self, game) -> int:
-        """
-        Determines the best column to play based on simple heuristics.
+    def get_move(self, board: np.ndarray) -> int:
+        valid_moves: List[int] = [c for c in range(board.shape[1]) if board[0][c] == 0]
+        opponent_id = 1 if self.player_id == 2 else 2
 
-        Args:
-            game: The game instance which must implement:
-                - get_valid_moves() -> List[int]
-                - is_winning_move(column: int, player_id: int) -> bool
-                - columns (int): Total number of columns in the board
-
-        Returns:
-            int: The selected column index.
-
-        Raises:
-            ValueError: If there are no valid moves available.
-        """
-        valid_moves: List[int] = game.get_valid_moves()
-        if not valid_moves:
-            raise ValueError(f"[{self.name}] No valid moves available.")
-
-        # Step 1: Take the winning move if available
+        # Try to win
         for col in valid_moves:
-            if game.is_winning_move(col, self.player_id):
+            temp_board = board.copy()
+            for row in reversed(range(temp_board.shape[0])):
+                if temp_board[row][col] == 0:
+                    temp_board[row][col] = self.player_id
+                    break
+            if self.is_winning_move(temp_board, self.player_id):
                 return col
 
-        # Step 2: Block the opponent's winning move
-        opponent_id = 2 if self.player_id == 1 else 1
+        # Try to block opponent
         for col in valid_moves:
-            if game.is_winning_move(col, opponent_id):
+            temp_board = board.copy()
+            for row in reversed(range(temp_board.shape[0])):
+                if temp_board[row][col] == 0:
+                    temp_board[row][col] = opponent_id
+                    break
+            if self.is_winning_move(temp_board, opponent_id):
                 return col
 
-        # Step 3: Prefer the center column if available
-        center_column = game.columns // 2
-        if center_column in valid_moves:
-            return center_column
+        # Otherwise random
+        return random.choice(valid_moves)
 
-        # Step 4: Fallback - choose the first valid move
-        return valid_moves[0]
+    def is_winning_move(self, board: np.ndarray, player_id: int) -> bool:
+        rows, cols = board.shape
+
+        # Horizontal
+        for r in range(rows):
+            for c in range(cols - 3):
+                if all(board[r, c+i] == player_id for i in range(4)):
+                    return True
+
+        # Vertical
+        for r in range(rows - 3):
+            for c in range(cols):
+                if all(board[r+i, c] == player_id for i in range(4)):
+                    return True
+
+        # Positive Diagonal
+        for r in range(rows - 3):
+            for c in range(cols - 3):
+                if all(board[r+i, c+i] == player_id for i in range(4)):
+                    return True
+
+        # Negative Diagonal
+        for r in range(3, rows):
+            for c in range(cols - 3):
+                if all(board[r-i, c+i] == player_id for i in range(4)):
+                    return True
+
+        return False
 
     def __str__(self) -> str:
-        """
-        Returns the name of the agent for easy identification.
-        """
         return self.name

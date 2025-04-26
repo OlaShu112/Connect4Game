@@ -1,5 +1,4 @@
 import pygame
-# constants.py
 
 # Constants for the Connect 4 game
 SQUARE_SIZE = 100

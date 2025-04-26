@@ -4,7 +4,7 @@ from connect4.constants import SQUARE_SIZE, ROW_COUNT, COLUMN_COUNT, BLUE, BLACK
 def draw_board(board, turn, screen):
     screen.fill(BLACK)
 
-    # Always show the hover circle, but color depends on turn
+    # Shows hover circle, changes in turns
     hover_color = RED if turn == 1 else YELLOW
     mouse_x = pygame.mouse.get_pos()[0]
     hover_x = mouse_x // SQUARE_SIZE * SQUARE_SIZE + SQUARE_SIZE // 2
