@@ -9,9 +9,9 @@ class MinimaxAgent:
     based on a specified search depth.
 
     Attributes:
-        #player_id (int): The ID representing this agent (1 or 2).
-        #name (str): Agent's display name.
-        #max_depth (int): Depth to which the game tree is evaluated.
+        player_id (int): The ID representing this agent (1 or 2).
+        name (str): Agent's display name.
+        max_depth (int): Depth to which the game tree is evaluated.
     """
 
     def __init__(self, player_id: int, max_depth: int = 4, name: str = "MinimaxAgent") -> None:
@@ -68,7 +68,7 @@ class MinimaxAgent:
             game: The current GameState instance.
             depth (int): Remaining depth to evaluate.
             maximizing_player (bool): Whether the current layer is maximizing.
-           alpha (float): Alpha value for pruning.
+            alpha (float): Alpha value for pruning.
             beta (float): Beta value for pruning.
 
         Returns:

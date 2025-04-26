@@ -173,7 +173,7 @@ def play_game(mode, player_name=None):
                     col = block_col
                 else:
                     if isinstance(ai_agent, MinimaxAgent):
-                        from utils.game_state import GameState
+                        
                         game_state = GameState(board.copy(), turn)
                         col = ai_agent.get_move(game_state)
                     else:
@@ -269,6 +269,7 @@ if __name__ == "__main__":
         ("Human vs Minimax Agent", "Minimax"),
         ("Human vs ML Agent", "ML"),
         ("AI vs AI (Random vs Smart)", "AI-Random-Smart"),
+        ("AI vs AI (Minimax vs Smart)", "AI-Minimax-Smart"),
         ("AI vs AI (Minimax vs ML)", "AI-Minimax-ML")
     ]
 
