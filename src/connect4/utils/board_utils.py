@@ -2,9 +2,11 @@ import numpy as np
 from connect4.constants import ROW_COUNT, COLUMN_COUNT
 
 def create_board():
+    """Creates and returns an empty Connect 4 board."""
     return np.zeros((ROW_COUNT, COLUMN_COUNT), dtype=int)
 
 def drop_piece(board, col, player):
+    """Drops a player's piece into a column."""
     for row in reversed(range(ROW_COUNT)):
         if board[row][col] == 0:
             board[row][col] = player

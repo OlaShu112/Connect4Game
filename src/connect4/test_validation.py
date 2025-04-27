@@ -46,7 +46,7 @@ def run_ai_vs_ai_test(agent1, agent2, num_games=500):
             else:
                 running = False
 
-        # Optional:  To Show simple progress every 10 games
+        # Optional:  To Show simple progress using bar length
         if (game + 1) % 5 == 0 or (game + 1) == num_games:
             progress = (game + 1) / num_games
             bar_length = 30

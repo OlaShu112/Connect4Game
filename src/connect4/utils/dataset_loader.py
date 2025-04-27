@@ -3,9 +3,21 @@ import csv
 
 class DatasetLoader:
     def __init__(self, data_path):
+        """
+        Sets the path where the data files are stored.
+        """
         self.data_path = data_path
 
     def load_csv(self, file_name):
+        """
+        Loads a CSV file and returns the data as a list of rows.
+
+        Args:
+            file_name (str): The name of the CSV file to load.
+
+        Returns:
+            list: List of rows from the CSV file.
+        """
         data = []
         try:
             file_path = os.path.join(self.data_path, file_name)
@@ -21,6 +33,15 @@ class DatasetLoader:
         return data
 
     def load_attribute_names(self, file_name):
+        """
+        Loads attribute names from a .names file.
+
+        Args:
+            file_name (str): The name of the file to read attributes from.
+
+        Returns:
+            list: List of attribute names.
+        """
         attributes = []
         try:
             file_path = os.path.join(self.data_path, file_name)
@@ -41,7 +62,7 @@ class DatasetLoader:
                             if len(parts) > 1:
                                 attribute_name = parts[1].split(':')[0]
                                 attributes.append(attribute_name)
-                        # Stop if we reach a line like "8. Missing Attribute Values"
+                        # Stop if we reach "43. Class:"
                         if line.startswith("43. Class:"):
                             break
 
@@ -53,10 +74,12 @@ class DatasetLoader:
         return attributes
 
     def load_names(self, file_name):
-        """Simple alias to load_attribute_names for consistency."""
+        """
+        Just calls load_attribute_names to keep things consistent.
+        """
         return self.load_attribute_names(file_name)
 
-# Example usage
+# Usage
 if __name__ == "__main__":
     data_loader = DatasetLoader(data_path="connect4_dataset")
 

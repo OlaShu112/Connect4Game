@@ -11,6 +11,9 @@ class Evaluation:
         self.results = defaultdict(int)  # Store results (win, loss, draw) counts
 
     def play_game(self, player1, player2):
+        """
+        Plays one game between two agents and returns the result.
+        """
         self.game.reset_board()
         current_player = 1  # Player 1 starts
         

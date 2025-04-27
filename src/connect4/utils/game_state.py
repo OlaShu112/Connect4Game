@@ -69,19 +69,35 @@ class GameState:
         else:
             return 0
 
-    def check_win(self, player): # Checks if the specified player has won the game.
+    def check_win(self, player): 
+        """
+        This checks if a player has four pieces in a row somewhere.
+
+        Args:
+            player (int): The player we are checking for (1 or 2).
+
+        Returns:
+            bool: True if the player won, False if not.
+        """
+        # Check horizontal wins
         for c in range(self.board.shape[1] - 3):
             for r in range(self.board.shape[0]):
                 if all(self.board[r][c+i] == player for i in range(4)):
                     return True
+                
+        # Check vertical wins
         for c in range(self.board.shape[1]):
             for r in range(self.board.shape[0] - 3):
                 if all(self.board[r+i][c] == player for i in range(4)):
                     return True
+                
+         # Check positive diagonal wins (\ direction)
         for c in range(self.board.shape[1] - 3):
             for r in range(self.board.shape[0] - 3):
                 if all(self.board[r+i][c+i] == player for i in range(4)):
                     return True
+                
+        # Check negative diagonal wins (/ direction)       
         for c in range(self.board.shape[1] - 3):
             for r in range(3, self.board.shape[0]):
                 if all(self.board[r-i][c+i] == player for i in range(4)):

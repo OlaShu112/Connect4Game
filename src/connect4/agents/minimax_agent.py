@@ -35,7 +35,7 @@ class MinimaxAgent:
             game: The current GameState instance.
 
         Returns:
-            #int: Best column index to play.
+            int: Best column index to play.
         """
         best_score = float("-inf")
         best_col = None

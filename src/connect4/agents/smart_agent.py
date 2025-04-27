@@ -11,6 +11,10 @@ class SmartAgent:
         self.name = name
 
     def get_move(self, board: np.ndarray) -> int:
+        """
+        Chooses a move for the SmartAgent.
+        Tries to win, block the opponent, or picks randomly.
+        """
         valid_moves: List[int] = [c for c in range(board.shape[1]) if board[0][c] == 0]
         opponent_id = 1 if self.player_id == 2 else 2
 
