@@ -1,3 +1,13 @@
+# Connect 4 Game Playing AI Agents
+
+**Module:** Artificial Intelligence & Machine Learning 1  
+**Module Code:** 55-508228  
+**Assignment Title:** Connect 4 Game Playing AI Agent  
+**Student ID:** 19014005  
+**Student Name:** Oladotun A Ogundari  
+**Submission Date:** 1st May 2025
+
+
 # Connect4Game – GUI Version
 
 A Python-based Connect Four game featuring a graphical user interface (GUI) and multiple intelligent AI agents. Built with Pygame, this project allows players to enjoy classic Connect 4 gameplay in several interactive modes, including a pure Human vs Human experience, as well as battles against various AI agents.
@@ -128,3 +138,9 @@ rm models/ml_agent_model.pkl
 python -B src/connect4Game/main.py
 ```
 
+### Testing and Validation
+
+Automated testing and validation of the Connect 4 AI agents was performed using the following script:
+
+```
+python -B src/connect4/test_validation.py
