@@ -15,16 +15,20 @@ class Connect4Game:
         self.current_player = 1
         self.game_over = False
 
+    def is_game_over(self):
+        return self.game_over
+
     def make_move(self, col):
         if not self.is_valid_move(col):
-            return False
+            return -1  # Or some safe error value
 
         row = self.get_next_open_row(col)
         self.board[row][col] = self.current_player
         if self.check_winner(row, col):
             self.game_over = True
         self.current_player = 3 - self.current_player  # Switch player
-        return True
+        return row  # <-- important: return the row
+
 
     def is_valid_move(self, col):
         return self.board[0][col] == self.EMPTY

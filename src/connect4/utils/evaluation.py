@@ -1,8 +1,12 @@
 import random
 import numpy as np
+import time
+import sys
 from collections import defaultdict
 from connect4.agents.minimax_agent import MinimaxAgent
 from connect4.agents.random_agent import RandomAgent
+from connect4.game import Connect4Game
+
 
 class Evaluation:
     def __init__(self, game, num_games=100):
@@ -11,35 +15,53 @@ class Evaluation:
         self.results = defaultdict(int)  # Store results (win, loss, draw) counts
 
     def play_game(self, player1, player2):
-        """
-        Plays one game between two agents and returns the result.
-        """
-        self.game.reset_board()
+        self.game.reset()
         current_player = 1  # Player 1 starts
+        last_row = -1 
+        last_col = -1
         
         while not self.game.is_game_over():
             if current_player == 1:
-                move = player1.get_move(self.game)
+                move = player1.get_move(self.game.get_board_copy())
             else:
-                move = player2.get_move(self.game)
+                move = player2.get_move(self.game.get_board_copy()) 
                 
-            self.game.make_move(move, current_player)
+            row = self.game.make_move(move)
+            last_row = row  # store last move
+            last_col = move
             current_player = 3 - current_player  # Switch between Player 1 and Player 2
         
         # Determine the winner or draw
-        if self.game.check_winner(1):
-            return 'player1'
-        elif self.game.check_winner(2):
-            return 'player2'
+        if self.game.check_winner(last_row, last_col):
+            winner_player = 3 - current_player
+            return 'player1' if winner_player == 1 else 'player2'
         else:
             return 'draw'
 
+ 
     def evaluate_agents(self, agent1, agent2):
+        start_time = time.time()  # Start timing
+
+        bar_length = 30  # Length of the progress bar
+
         for game_num in range(self.num_games):
-            print(f"Evaluating game {game_num + 1} of {self.num_games}...")
             result = self.play_game(agent1, agent2)
             self.results[result] += 1
 
+            # Progress bar calculation
+            progress = (game_num + 1) / self.num_games
+            filled_length = int(bar_length * progress)
+            bar = "#" * filled_length + "-" * (bar_length - filled_length)
+            percent = progress * 100
+
+            # Progress bar
+            sys.stdout.write(f"\rEvaluating: [{bar}] {percent:.1f}%")
+            sys.stdout.flush()
+
+        end_time = time.time()
+        total_time = end_time - start_time
+
+        print(f"\n✅ Evaluation Complete in {total_time:.2f} seconds!\n")
         return self.results
 
     def print_evaluation_results(self):
@@ -74,4 +96,16 @@ class Evaluation:
         self.results.clear()  # Clear previous results
         self.evaluate_agents(agent1, agent2)
         self.print_evaluation_results()
+
+if __name__ == "__main__":
+    from connect4.agents.random_agent import RandomAgent
+    from connect4.game import Connect4Game  
+
+    game = Connect4Game() 
+    evaluation = Evaluation(game)
+    agent1 = RandomAgent(player_id=1)
+    agent2 = RandomAgent(player_id=2)
+
+    evaluation.evaluate_agents(agent1, agent2)
+    evaluation.print_evaluation_results()
 
