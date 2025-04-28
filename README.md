@@ -5,7 +5,7 @@
 **Assignment Title:** Connect 4 Game Playing AI Agent  
 **Student ID:** 19014005  
 **Student Name:** Oladotun A Ogundari  
-**Submission Date:** 1st May 2025
+**Submission Date:** 28th April 2025
 
 
 # Connect4Game – GUI Version
