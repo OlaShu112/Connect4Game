@@ -21,6 +21,7 @@ class MLAgent:
         self.names_path = names_path
         self.label_encoder = LabelEncoder()
         self.feature_names = None
+        self.name = "MLAgent" 
         self.model = self._load_or_train_model()
 
     def _load_or_train_model(self):

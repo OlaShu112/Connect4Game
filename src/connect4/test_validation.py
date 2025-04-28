@@ -78,12 +78,12 @@ if __name__ == "__main__":
 
     # Test 1: Random vs Smart
     print("Testing Random vs Smart...")
-    run_ai_vs_ai_test(random_agent, smart_agent, num_games=500)
+    run_ai_vs_ai_test(random_agent, smart_agent, num_games=500) # Tested with 50 and 100
 
     # Test 2: Smart vs Minimax
     print("\nTesting Smart vs Minimax...")
-    run_ai_vs_ai_test(smart_agent2, minimax_agent, num_games=500)
+    run_ai_vs_ai_test(smart_agent2, minimax_agent, num_games=500) # Tested with 50 and 100
 
     # Test 3: Minimax vs ML
     print("\nTesting Minimax vs ML...")
-    run_ai_vs_ai_test(minimax_agent2, ml_agent, num_games=500)
+    run_ai_vs_ai_test(minimax_agent2, ml_agent, num_games=500) # Tested with 50 and 100

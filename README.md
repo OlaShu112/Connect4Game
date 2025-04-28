@@ -147,6 +147,8 @@ python -B src/connect4/test_validation.py
 
 evaluation.py was used to evaluate AI agent performance over multiple games (e.g., Smart vs Random Agent, Minimax vs ML Agent) and calculate win/draw rates automatically.
 
+PS C:\xampp\htdocs\Connect4Assessment\src> $env:PYTHONPATH="C:\xampp\htdocs\Connect4Assessment\src"   
+
 ```
 python -B src/connect4/utils/evaluation.py
 
