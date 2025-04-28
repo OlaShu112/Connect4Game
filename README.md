@@ -51,7 +51,6 @@ Running the Game
 cd Connect4Assessment
 python -B src/connect4/main.py
 
-
 ### Project Structure
 
 Connect4Assessment/
@@ -79,12 +78,11 @@ Connect4Assessment/
 │       ├── game.py
 │       ├── play_game.py
 │       ├── main.py
+├── 19014005_Oladotun_Video.mp4   
 ├── .gitignore
 ├── requirements.txt
 ├── scores.csv
 ├── README.md
-
-
 
 
 ### Customization
@@ -94,7 +92,7 @@ from agents import RandomAgent, SmartAgent, MinimaxAgent, MLAgent
 agent1 = SmartAgent()
 agent2 = MLAgent()
 
-# Future Improvements
+### Future Improvements
 
 Upgrade MLAgent with a trained neural network.
 
@@ -104,13 +102,13 @@ Add networking support for remote Human vs Human.
 
 Integrate advanced algorithms like Monte Carlo Tree Search (MCTS).
 
-# Acknowledgements
+### Acknowledgements
 
 Minimax logic adapted from GeeksforGeeks – Minimax Algorithm (Alpha-Beta Pruning)
 
 Dataset sourced from UCI Machine Learning Repository – Connect-4 Game Data
 
-# GitHub Repository
+### GitHub Repository
 
 https://github.com/OlaShu112/Connect4Game
 
@@ -122,7 +120,7 @@ __pycache__/
 assets/*.wav
 models/*.pkl
 
-requirements.txt
+### requirements.txt
 
 pygame
 pandas
@@ -144,3 +142,19 @@ Automated testing and validation of the Connect 4 AI agents was performed using 
 
 ```
 python -B src/connect4/test_validation.py
+
+### Evaluation
+
+evaluation.py was used to evaluate AI agent performance over multiple games (e.g., Smart vs Random Agent, Minimax vs ML Agent) and calculate win/draw rates automatically.
+
+```
+python -B src/connect4/utils/evaluation.py
+
+
+### Testing ML Agent
+
+The ML Agent was tested by first training on the Connect-4 dataset and then evaluating its performance against both human players and other AI agents (including Minimax). If the model file was missing, the system automatically retrains a new model on startup.
+
+### I vs AI Mode
+
+The AI vs AI feature allows any two AI agents (e.g., Random vs Smart, Minimax vs ML) to play against each other automatically. This was particularly useful for evaluating agent performance in bulk simulations (e.g., 100 games or more).

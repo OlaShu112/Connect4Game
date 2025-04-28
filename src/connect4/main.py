@@ -1,3 +1,7 @@
+# =========================
+# Connect 4 Game - Full Code
+# =========================
+
 import pygame
 import sys
 import time
@@ -13,22 +17,25 @@ from utils.game_help import display_message
 from utils.music_player import play_music, stop_music, next_track, previous_track
 from utils.game_state import GameState
 
-
+# Initialize Pygame
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Connect 4")
 
+# Setup fonts
 FONT = pygame.font.SysFont("Cambria", 32, bold=True)
 BIG_FONT = pygame.font.SysFont("Cambria", 48, bold=True)
-CLICK_COOLDOWN = 300  
-TURN_TIME_LIMIT = 10  
+CLICK_COOLDOWN = 300  # milliseconds
+TURN_TIME_LIMIT = 10   # seconds for each turn
 
+# Render text on the screen
 def render_text(text, x, y, color=WHITE, center=True):
     label = FONT.render(text, True, color)
     rect = label.get_rect(center=(x, y)) if center else label.get_rect(topleft=(x, y))
     screen.blit(label, rect)
     return rect
 
+# Register a player (ask for name)
 def register_player():
     screen.fill(BLACK)
     name = ""
@@ -53,6 +60,7 @@ def register_player():
                 elif event.unicode.isprintable():
                     name += event.unicode
 
+# Main menu to pick game mode
 def show_menu():
     screen.fill(BLACK)
     render_text("Select Game Mode", WIDTH // 2, 50, YELLOW)
@@ -63,6 +71,7 @@ def show_menu():
     pygame.display.flip()
     return buttons
 
+# Get user click for mode selection
 def get_mode_selection(buttons):
     while True:
         for event in pygame.event.get():
@@ -74,6 +83,7 @@ def get_mode_selection(buttons):
                     if rect.collidepoint(event.pos):
                         return mode
 
+# Ask player if they want to play again
 def ask_play_again():
     screen.fill(BLACK)
     render_text("Play Again? Y/N", WIDTH // 2, HEIGHT // 2, YELLOW)
@@ -90,12 +100,14 @@ def ask_play_again():
                 elif event.key == pygame.K_n:
                     return False
 
+# Main gameplay logic
 def play_game(mode, player_name=None):
     board = create_board()
     turn = 1
     draw_board(board, turn, screen)
     last_click_time = 0
 
+    # Decide player names based on mode
     if mode == "Human-Human":
         player1_name = "Player 1"
         player2_name = "Player 2"
@@ -124,6 +136,7 @@ def play_game(mode, player_name=None):
 
             pygame.display.set_caption(f"Connect 4 - Time Left: {remaining_time}s")  # Update title with countdown
 
+            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -138,6 +151,7 @@ def play_game(mode, player_name=None):
                     elif event.key == pygame.K_LEFT:
                         previous_track()
 
+            # Check draw
             if board_is_full(board):
                 display_message("It's a draw!")
                 save_player_score(player1_name, 0.5)
@@ -148,10 +162,13 @@ def play_game(mode, player_name=None):
 
             col = None
 
+            # Human vs Human input
             if mode == "Human-Human":
                 if pygame.mouse.get_pressed()[0] and current_time - last_click_time > CLICK_COOLDOWN:
                     col = pygame.mouse.get_pos()[0] // SQUARE_SIZE
                     last_click_time = current_time
+            
+            # AI vs AI mode
             elif mode.startswith("AI") and "AI" in mode:
                 pygame.time.delay(800)
                 agent = agent1 if turn == 1 else agent2
@@ -161,6 +178,8 @@ def play_game(mode, player_name=None):
                     col = agent.get_move(game_state)
                 else:
                     col = agent.get_move(board)
+
+            # Human vs AI input
             elif turn == 1:
                 if pygame.mouse.get_pressed()[0] and current_time - last_click_time > CLICK_COOLDOWN:
                     col = pygame.mouse.get_pos()[0] // SQUARE_SIZE
@@ -179,7 +198,7 @@ def play_game(mode, player_name=None):
                     else:
                          col = ai_agent.get_move(board)
 
-
+            # Drop piece and check result
             if col is not None and valid_move(board, col):
                 row = drop_piece(board, col, turn)
                 if row != -1:
@@ -200,6 +219,7 @@ def play_game(mode, player_name=None):
                 turn = switch_turn(turn)
                 running_turn = False  # End turn after valid move
 
+            # If time runs out
             if remaining_time <= 0:
                 print("⏰ Turn timed out! Switching turn...")
                 turn = switch_turn(turn)
@@ -214,7 +234,7 @@ def play_game(mode, player_name=None):
     else:
         main_menu(player_name)
 
-
+# Main starting point
 def main():
     ask_register = True
     player_name = None
@@ -237,6 +257,7 @@ def main():
 
     main_menu(player_name)  # After registration, move to main menu
 
+# Show menu again and start a game
 def main_menu(player_name=None):
     screen.fill(BLACK)
     menu_buttons = show_menu()
@@ -275,11 +296,12 @@ if __name__ == "__main__":
 
     main()
 
-
-
-# This is a Connect Four game implementation with options for human, AI vs AI, and player vs AI modes.
-
 ## References
+
+# - This is a Connect Four game implementation with options for human, AI vs AI, and player vs AI modes.
+# - Pygame docs, Scikit-learn docs, UCI Connect4 Dataset, YouTube tutorials, GitHub repos, GFG articles
+# - Full links already provided in your original references section.
+
 # [1] https://www.pygame.org/docs/
 # https://scikit-learn.org/stable/
 # https://www.youtube.com/watch?v=UYgyRArKDEs&list=PLFCB5Dp81iNV_inzM-R9AKkZZlePCZdtV
@@ -287,9 +309,11 @@ if __name__ == "__main__":
 # https://www.youtube.com/watch?v=yzj5TAfPI5Y
 # https://labex.io/tutorials/python-connect-four-game-human-vs-ai-298858
 # https://www.youtube.com/watch?v=cONc0NcKE7s
+# https://www.youtube.com/playlist?list=PLFCB5Dp81iNV_inzM-R9AKkZZlePCZdtV
 # https://www.youtube.com/watch?app=desktop&v=zD-Xuu_Jpe4&t=325s
 # https://github.com/Buzzpy/Python-Projects/blob/main/Music_player.py
 # https://github.com/hardbyte/python-can/blob/main/can/message.py
 # https://github.com/cansozbir/Connect-4
 # https://www.geeksforgeeks.org/python-oops-concepts/
+# https://www.w3schools.com/python/python_ml_cross_validation.asp
 # https://www.google.com/search?q=oop+programming+python&sca_esv=912e3b7be34fd981&sxsrf=AHTn8zrCMezWnARfvj5NAbMrvXU05fQsGA%3A1745698157453&source=hp&ei=bT0NaP_AGbq-hbIP5I2Z-Q8&iflsig=ACkRmUkAAAAAaA1LfdW9dLpv9wDOqbAclcQeP9-I4qO7&oq=oop+programming+&gs_lp=Egdnd3Mtd2l6IhBvb3AgcHJvZ3JhbW1pbmcgKgIIATIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgARIqUtQAFidMnAAeACQAQCYAZoBoAG1CaoBBDE1LjG4AQHIAQD4AQGYAhCgAv0JwgIIEAAYgAQYsQPCAg4QABiABBixAxiDARiKBcICBBAAGAPCAg4QLhiABBixAxjRAxjHAcICERAuGIAEGLEDGNEDGIMBGMcBwgILEAAYgAQYsQMYgwHCAggQLhiABBixA8ICCBAuGIAEGNQCwgINEC4YgAQY0QMYxwEYCsICBxAAGIAEGAqYAwCSBwQxNC4yoAf7X7IHBDE0LjK4B_0J&sclient=gws-wiz#fpstate=ive&vld=cid:563ce64d,vid:Ej_02ICOIgs,st:0

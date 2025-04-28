@@ -2,9 +2,10 @@ import pygame
 from connect4.constants import SQUARE_SIZE, ROW_COUNT, COLUMN_COUNT, BLUE, BLACK, RED, YELLOW
 
 def draw_board(board, turn, screen):
+    # Clear the screen by filling it black
     screen.fill(BLACK)
 
-    # Shows hover circle, changes in turns
+     # Draw a hover circle above the board to show where the disc will drop
     hover_color = RED if turn == 1 else YELLOW
     mouse_x = pygame.mouse.get_pos()[0]
     hover_x = mouse_x // SQUARE_SIZE * SQUARE_SIZE + SQUARE_SIZE // 2
@@ -24,4 +25,5 @@ def draw_board(board, turn, screen):
                 int((r + 1) * SQUARE_SIZE + SQUARE_SIZE / 2)
             ), SQUARE_SIZE // 2 - 5)
 
+    # Update the display with new drawing
     pygame.display.update()
