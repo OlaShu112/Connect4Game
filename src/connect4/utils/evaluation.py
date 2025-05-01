@@ -2,6 +2,8 @@ import random
 import numpy as np
 import time
 import sys
+import os
+import matplotlib.pyplot as plt
 from collections import defaultdict
 from connect4.agents.minimax_agent import MinimaxAgent
 from connect4.agents.random_agent import RandomAgent
@@ -97,6 +99,28 @@ class Evaluation:
         self.evaluate_agents(agent1, agent2)
         self.print_evaluation_results()
 
+
+    def save_results_graph(self, agent1_name, agent2_name, save_path='reports/evaluation_result.png'):
+        labels = ['Agent 1 Wins', 'Agent 2 Wins', 'Draws']
+        values = [self.results['player1'], self.results['player2'], self.results['draw']]
+
+        plt.figure(figsize=(6, 4))
+        bars = plt.bar(labels, values)
+        plt.title(f"{agent1_name} vs {agent2_name} Evaluation Results")
+        plt.ylabel("Games Won")
+
+        for bar in bars:
+            yval = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width() / 2.0, yval + 0.5, f'{int(yval)}',
+                 ha='center', va='bottom')
+
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.tight_layout()
+        plt.savefig(save_path)
+        plt.close()
+        print(f"📊 Graph saved to {save_path}")
+
+
 if __name__ == "__main__":
     from connect4.agents.random_agent import RandomAgent
     from connect4.game import Connect4Game  
@@ -108,4 +132,6 @@ if __name__ == "__main__":
 
     evaluation.evaluate_agents(agent1, agent2)
     evaluation.print_evaluation_results()
+
+    evaluation.save_results_graph(agent1.__class__.__name__, agent2.__class__.__name__)
 
