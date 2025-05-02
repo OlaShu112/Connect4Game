@@ -7,9 +7,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import joblib
 import random
-from agents.minimax_agent import MinimaxAgent
-from utils.game_state import GameState
-from utils.dataset_loader import DatasetLoader  # <-- Import properly
+from connect4.agents.minimax_agent import MinimaxAgent
+from connect4.utils.game_state import GameState
+from connect4.utils.dataset_loader import DatasetLoader  # <-- Import properly
 
 class MLAgent:
     def __init__(self, player_id: int, model_path: str = "models/ml_agent_model.pkl",
