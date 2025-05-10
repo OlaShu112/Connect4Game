@@ -133,7 +133,7 @@ To retrain the ML Agent, delete the old model and start the game:
 
 ```
 rm models/ml_agent_model.pkl
-python -B src/connect4Game/main.py
+python -B src/connect4/main.py
 ```
 
 ### Testing and Validation
